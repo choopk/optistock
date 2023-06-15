@@ -16,7 +16,7 @@
     "incremental": true,
     "baseUrl": ".",
     "paths": {
-      "@/components/*": ["./src/components/*"],
+      "@/components/*": ["components/*"],
       "@/styles/*": ["./src/styles/*"]
     }
   },
