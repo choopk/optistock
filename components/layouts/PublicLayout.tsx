@@ -1,13 +1,15 @@
 import React from "react";
-import { ThemeProvider } from "../ThemeProvider";
+import { ThemeProvider } from "../them-provider";
+import { Chat } from "@/components/chat";
 
 const PublicLayout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+    <>
       <div className="relative min-h-screen">
         <div className="">{children}</div>
       </div>
-    </ThemeProvider>
+      <Chat />
+    </>
   );
 };
 

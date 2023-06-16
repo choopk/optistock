@@ -1,5 +1,5 @@
 import React from "react";
-import { ThemeProvider } from "../ThemeProvider";
+import { ThemeProvider } from "../them-provider";
 
 const PrivateLayout = ({ children }: { children: React.ReactNode }) => {
   return (
