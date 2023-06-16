@@ -3,7 +3,20 @@ import {
   BaseChatMessage,
   HumanChatMessage,
   AIChatMessage,
+  LLMResult,
 } from "langchain/schema";
+import { Category } from "@prisma/client";
+
+type Item = {
+  id: number;
+  name: string;
+  sku: string;
+  description?: string | null;
+  category: Category;
+  quantity: number;
+  createdAt: Date;
+  updatedAt: Date;
+};
 
 export type ChatGPTAgent = "user" | "system" | "assistant";
 
@@ -28,7 +41,7 @@ export class OpenAiChat {
     this.maxTokens = parseInt(process.env.MAX_TOKEN ?? "256");
   }
 
-  async streamPrompt(messages: ChatGPTMessage[]) {
+  async streamPrompt(messages: ChatGPTMessage[], inventoryStatus?: Item[]) {
     const encoder = new TextEncoder();
     const stream = new TransformStream();
     const writer = stream.writable.getWriter();
@@ -49,7 +62,7 @@ export class OpenAiChat {
           },
         },
         {
-          async handleLLMEnd() {
+          async handleLLMEnd(output: LLMResult) {
             await writer.ready;
             await writer.close();
           },
@@ -57,10 +70,29 @@ export class OpenAiChat {
       ],
     });
 
+    let inventory = "";
+    let prefixPrompt: string | undefined;
+    if (inventoryStatus) {
+      for (const item of inventoryStatus) {
+        inventory += `${item.sku}, ${item.name}, ${item.category.name} ${item.quantity}\n`;
+      }
+
+      if (process.env.PREFIX_PROMPT_INVENTORY) {
+        prefixPrompt = process.env.PREFIX_PROMPT_INVENTORY.replace(
+          "{INVENTORY_STATUS}",
+          inventory
+        );
+      }
+    } else if (process.env.PREFIX_PROMPT) {
+      prefixPrompt = process.env.PREFIX_PROMPT;
+    }
+
+    if (prefixPrompt === undefined) {
+      prefixPrompt = "You are a helpful assistant";
+    }
+
     const messageBlocks: BaseChatMessage[] = [
-      new HumanChatMessage(
-        process.env.PREFIX_PROMPT ?? "You are a helpful assistant"
-      ),
+      new HumanChatMessage(prefixPrompt),
     ];
 
     for (const message of messages) {
@@ -72,6 +104,12 @@ export class OpenAiChat {
     }
 
     void chat.call(messageBlocks);
+
+    console.log("PROMPT:");
+    for (const message of messageBlocks) {
+      console.log(`${message._getType()}: ${message.text}`);
+    }
+
     return stream.readable;
   }
 }
