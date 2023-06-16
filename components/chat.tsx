@@ -1,11 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "./button";
 import { type ChatGPTMessage, ChatLine, LoadingChatLine } from "./chat-line";
 import { useCookies } from "react-cookie";
+import { ScrollArea } from "./ui/scroll-area";
 
 const COOKIE_NAME = "optibot";
 
-// default first message to display in UI (not necessary to define the prompt)
 export const initialMessages: ChatGPTMessage[] = [
   {
     role: "assistant",
@@ -49,6 +49,7 @@ export function Chat() {
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [cookie, setCookie] = useCookies([COOKIE_NAME]);
+  const endOfMessagesRef = useRef<null | HTMLDivElement>(null);
 
   useEffect(() => {
     if (!cookie[COOKIE_NAME]) {
@@ -57,6 +58,22 @@ export function Chat() {
       setCookie(COOKIE_NAME, randomId);
     }
   }, [cookie, setCookie]);
+
+  useEffect(() => {
+    if (endOfMessagesRef.current) {
+      if (loading) {
+        endOfMessagesRef.current.scrollIntoView({ behavior: "smooth" });
+      }
+    }
+  }, [messages, loading]);
+
+  useEffect(() => {
+    if (endOfMessagesRef.current) {
+      if (loading) {
+        endOfMessagesRef.current.scrollIntoView({ behavior: "smooth" });
+      }
+    }
+  }, [messages, loading]);
 
   // send message to API /api/chat endpoint
   const sendMessage = async (message: string) => {
@@ -113,19 +130,18 @@ export function Chat() {
 
   return (
     <div className="flex h-[500px] flex-col overflow-y-auto rounded-2xl border-zinc-100 lg:border lg:p-6">
-      <div className="flex-grow overflow-auto">
+      <ScrollArea className="flex-grow">
         {messages.map(({ content, role }, index) => (
           <ChatLine key={index} role={role} content={content} />
         ))}
-
         {loading && <LoadingChatLine />}
-
         {messages.length < 2 && (
           <span className="clear-both mx-auto flex flex-grow text-gray-600">
             Type a message to start the conversation
           </span>
         )}
-      </div>
+        <div ref={endOfMessagesRef} />
+      </ScrollArea>
       <InputMessage
         input={input}
         setInput={setInput}
