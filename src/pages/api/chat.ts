@@ -12,10 +12,7 @@ const handler = async (req: Request): Promise<Response> => {
   const openAiChat = new OpenAiChat();
 
   let stream: ReadableStream;
-  const res = await fetch(`${process.env.NEXTAUTH_URL}/api/get-items`, {
-    method: "POST",
-    body: JSON.stringify({ query: "" }),
-  });
+  const res = await fetch(`${process.env.NEXTAUTH_URL}/api/items`);
   const inventoryStatus = await res.json();
   stream = await openAiChat.streamPrompt(body.messages, inventoryStatus);
 
