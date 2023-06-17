@@ -43,8 +43,6 @@ export default async function handler(
   const skip = query.skip ? parseInt(query.skip.toString()) : undefined;
   const take = query.take ? parseInt(query.take.toString()) : undefined;
 
-  console.log("SORT:", sort);
-
   const items = await prisma.item.findMany({
     skip,
     take,

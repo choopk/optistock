@@ -92,11 +92,6 @@ export class OpenAiChat {
 
     void chat.call(messageBlocks);
 
-    console.log("PROMPT:");
-    for (const message of messageBlocks) {
-      console.log(`${message._getType()}: ${message.text}`);
-    }
-
     return stream.readable;
   }
 }
