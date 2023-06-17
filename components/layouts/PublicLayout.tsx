@@ -1,22 +1,40 @@
 import React from "react";
-import { MainNav } from "@/components/main-nav"
-import { Search } from "@/components/search"
-import { UserNav } from "@/components/user-nav"
+import { MainNav } from "@/components/main-nav";
 import { ThemeProvider } from "../theme-provider";
+import Link from "next/link";
+import Image from "next/image";
 
 const PublicLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
       <div className="relative min-h-screen">
-        <div className=""><main><div className="hidden flex-col md:flex">        <div className="border-b">
-          <div className="flex h-16 items-center px-4">
-            <MainNav className="mx-6" />
-            <div className="ml-auto flex items-center space-x-4">
-              <Search />
-              <UserNav />
+        <div className="">
+          <main>
+            <div className="hidden flex-col md:flex">
+              {" "}
+              <div className="border-b">
+                <div className="flex h-16 items-center px-4">
+                  <MainNav className="mx-6" />
+                  <div className="ml-auto flex items-center space-x-4">
+                    <Link
+                      href="/notifications"
+                      className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
+                    >
+                      <Image
+                        src="/notification.png"
+                        width={36}
+                        height={36}
+                        alt="Notifications"
+                        className="dark:invert"
+                      />
+                    </Link>
+                  </div>
+                </div>
+              </div>
+              {children}
             </div>
-          </div>
-        </div>{children}</div></main></div>
+          </main>
+        </div>
       </div>
     </ThemeProvider>
   );

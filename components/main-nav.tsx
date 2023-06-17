@@ -16,22 +16,16 @@ export function MainNav({
         href="/"
         className="text-sm font-medium transition-colors hover:text-primary"
       >
-        Overview
+        Dashboard
       </Link>
       <Link
-        href="/"
-        className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
-      >
-        Customers
-      </Link>
-      <Link
-        href="/"
+        href="/coming-soon"
         className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
       >
         Products
       </Link>
       <Link
-        href="/"
+        href="/coming-soon"
         className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
       >
         Settings
