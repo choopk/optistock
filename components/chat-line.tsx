@@ -1,5 +1,6 @@
 import clsx from "clsx";
 import Balancer from "react-wrap-balancer";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const BalancerWrapper = (props: any) => <Balancer {...props} />;
 
@@ -57,10 +58,16 @@ export function ChatLine({ role = "assistant", content }: ChatGPTMessage) {
         <div className="float-right mb-5 rounded-lg bg-white px-4 py-5 shadow-lg ring-1 ring-zinc-100 sm:px-6">
           <div className="flex space-x-3">
             <div className="flex-1 gap-4">
-              <p className="font-large text-xxl text-gray-900">
+              <p className="font-large text-xxl text-gray-900 flex items-center space-x-2">
                 <a href="#" className="hover:underline">
                   {role == "assistant" ? "Optibot" : "You"}
                 </a>
+                {role == "assistant" && (
+                  <Avatar className="h-9 w-9">
+                    <AvatarImage src="/avatars/optibot.png" alt="Avatar" />
+                    <AvatarFallback>OP</AvatarFallback>
+                  </Avatar>
+                )}
               </p>
               <p
                 className={clsx(
