@@ -16,8 +16,26 @@ type Item = {
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<Item[]>
+  res: NextApiResponse<Item | Item[]>
 ) {
+  if (req.method === "POST") {
+    const reqItem = req.body;
+    const item = await prisma.item.create({
+      data: {
+        ...reqItem,
+        category: {
+          connect: {
+            id: reqItem.category.id,
+          },
+        },
+      },
+      include: {
+        category: true,
+      },
+    });
+    res.status(201).json(item);
+  }
+
   const query = req.query;
   const keyValue = query.sort?.toString().split(",");
   const sort = keyValue ? Object.fromEntries([keyValue]) : undefined;
