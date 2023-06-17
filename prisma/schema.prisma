@@ -28,6 +28,7 @@ model Item {
   sku          String         @unique
   description  String?
   quantity     Int
+  threshold    Int?
   category     Category       @relation(fields: [categoryId], references: [id])
   categoryId   Int
   createdAt    DateTime       @default(now())
