@@ -23,15 +23,16 @@ model User {
 }
 
 model Item {
-  id          Int      @id @default(autoincrement())
-  name        String
-  sku         String   @unique
-  description String?
-  quantity    Int
-  category    Category @relation(fields: [categoryId], references: [id])
-  categoryId  Int
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id           Int            @id @default(autoincrement())
+  name         String
+  sku          String         @unique
+  description  String?
+  quantity     Int
+  category     Category       @relation(fields: [categoryId], references: [id])
+  categoryId   Int
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  Notification Notification[]
 }
 
 model Category {
@@ -46,6 +47,8 @@ model Notification {
   id         Int              @id @default(autoincrement())
   userId     String
   user       User             @relation(fields: [userId], references: [id])
+  itemId     Int?
+  item       Item?            @relation(fields: [itemId], references: [id])
   title      String
   message    String
   type       NotificationType
