@@ -1,13 +1,11 @@
 import Head from "next/head";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
-  Activity,
-  CreditCard,
-  DollarSign,
-  Download,
-  Users,
+  PackagePlus,
+  PackageSearch,
+  TrendingDown,
+  TrendingUp,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -15,14 +13,84 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import Link from "next/link";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { CalendarDateRangePicker } from "@/components/date-range-picker";
 import { Overview } from "@/components/overview";
 import { Inventory } from "@/components/inventory";
+import { useQuery } from "@tanstack/react-query";
+import { useFetch } from "@/hooks";
 import PublicLayout from "@/components/layouts/PublicLayout";
+import Spinner from "@/components/spinner";
+import { Item } from "./api/items";
+import clsx from "clsx";
 
 export default function Home() {
+  const fetchItems = useFetch(`http://localhost:3000/api/items`);
+  const [totalStock, setTotalStock] = useState(0);
+  const [mostStock, setMostStock] = useState<{
+    name: string;
+    quantity: number;
+    threshold?: number;
+  }>({
+    name: "",
+    quantity: 0,
+    threshold: 0,
+  });
+  const [leastStock, setLeastStock] = useState<{
+    name: string;
+    quantity: number;
+    threshold?: number;
+  }>({
+    name: "",
+    quantity: 0,
+    threshold: 0,
+  });
+  const [restockCount, setRestockCount] = useState(0);
+  const [restockItem, setRestockItem] = useState("");
+  const { data, isLoading } = useQuery({
+    queryKey: ["home"],
+    queryFn: fetchItems,
+  });
+
+  useEffect(() => {
+    if (data) {
+      let totalStock = 0;
+      let mostStock: {
+        name: string;
+        quantity: number;
+        threshold?: number;
+      } = { name: "", quantity: 0, threshold: 0 };
+      let leastStock: {
+        name: string;
+        quantity: number;
+        threshold?: number;
+      } = { name: "", quantity: data[0].quantity, threshold: 0 };
+      let restockCount = 0;
+      let restockItem = "";
+
+      data.forEach(({ name, quantity, threshold }: Item) => {
+        if (quantity > mostStock.quantity) {
+          mostStock = { name, quantity, threshold: threshold ?? undefined };
+        }
+        if (quantity < leastStock.quantity) {
+          leastStock = { name, quantity, threshold: threshold ?? undefined };
+        }
+        if (threshold && quantity < threshold) {
+          restockCount++;
+          // Only get last one
+          restockItem = name;
+        }
+        totalStock += quantity;
+      });
+
+      setTotalStock(totalStock);
+      setMostStock(mostStock);
+      setLeastStock(leastStock);
+      setRestockCount(restockCount);
+      setRestockItem(restockItem);
+      setTotalStock(totalStock);
+    }
+  }, [data, isLoading, totalStock]);
+
   return (
     <React.Fragment>
       <Head>
@@ -32,93 +100,126 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <PublicLayout>
-        <div className="flex-1 space-y-4 p-8 pt-6">
-          <div className="flex items-center justify-between space-y-2">
-            <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
+        {isLoading ? (
+          <Spinner />
+        ) : (
+          <div className="flex-1 space-y-4 p-8 pt-6">
+            <div className="flex items-center justify-between space-y-2">
+              <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
+            </div>
+            <Tabs defaultValue="overview" className="space-y-4">
+              <TabsList>
+                <TabsTrigger value="overview">Overview</TabsTrigger>
+              </TabsList>
+              <TabsContent value="overview" className="space-y-4">
+                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+                  <Card>
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                      <CardTitle className="text-sm font-medium">
+                        Total Stock
+                      </CardTitle>
+                      <PackageSearch className="h-4 w-4 text-muted-foreground" />
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-2xl font-bold">{totalStock}</div>
+                    </CardContent>
+                  </Card>
+                  <Card>
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                      <CardTitle className="text-sm font-medium">
+                        Most Stock Item
+                      </CardTitle>
+                      <TrendingUp className="h-4 w-4 text-muted-foreground" />
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-md group relative inline-block font-bold duration-300">
+                        {mostStock.name.length > 30
+                          ? `${mostStock.name.slice(0, 30)}...`
+                          : mostStock.name}
+                        <span className="absolute -top-2 -right-3 z-10 hidden w-48 translate-x-full rounded-lg bg-gray-700 px-2 py-1 text-center text-sm text-white before:absolute before:top-1/2 before:right-[100%] before:-translate-y-1/2 before:border-8 before:border-y-transparent before:border-l-transparent before:border-r-gray-700 before:content-[''] group-hover:flex">
+                          {mostStock.name}
+                        </span>
+                      </div>
+                      <p className="text-s text-muted-foreground">
+                        {mostStock.quantity}/{mostStock.threshold ?? "?"}
+                      </p>
+                    </CardContent>
+                  </Card>
+                  <Card>
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                      <CardTitle className="text-sm font-medium">
+                        Least Stock Item
+                      </CardTitle>
+                      <TrendingDown className="h-4 w-4 text-muted-foreground" />
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-md group relative inline-block font-bold duration-300">
+                        {leastStock.name.length > 30
+                          ? `${leastStock.name.slice(0, 30)}...`
+                          : leastStock.name}
+                        <span className="absolute -top-2 -right-3 z-10 hidden w-48 translate-x-full rounded-lg bg-gray-700 px-2 py-1 text-center text-sm text-white before:absolute before:top-1/2 before:right-[100%] before:-translate-y-1/2 before:border-8 before:border-y-transparent before:border-l-transparent before:border-r-gray-700 before:content-[''] group-hover:flex">
+                          {leastStock.name}
+                        </span>
+                      </div>
+                      <p
+                        className={clsx(
+                          "text-s text-muted-foreground",
+                          leastStock.quantity - (leastStock.threshold ?? 0) <= 0
+                            ? "font-bold text-red-600 dark:text-red-300"
+                            : ""
+                        )}
+                      >
+                        {leastStock.quantity}/{leastStock.threshold ?? "?"}
+                      </p>
+                    </CardContent>
+                  </Card>
+                  <Card>
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                      <CardTitle className="text-sm font-medium">
+                        Items Require Restock
+                      </CardTitle>
+                      <PackagePlus className="h-4 w-4 text-muted-foreground" />
+                    </CardHeader>
+                    <CardContent>
+                      <div
+                        className={clsx(
+                          "group relative inline-block text-2xl font-bold font-bold duration-300",
+                          restockCount > 0
+                            ? "font-bold text-red-600 dark:text-red-300"
+                            : ""
+                        )}
+                      >
+                        {restockCount}
+                        <span className="absolute -top-2 -right-3 z-10 hidden w-48 translate-x-full rounded-lg bg-gray-700 px-2 py-1 text-center text-sm text-white before:absolute before:top-1/2 before:right-[100%] before:-translate-y-1/2 before:border-8 before:border-y-transparent before:border-l-transparent before:border-r-gray-700 before:content-[''] group-hover:flex">
+                          {restockItem + (restockCount > 1 ? "..." : "")}
+                        </span>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
+                  <Card className="col-span-4">
+                    <CardHeader>
+                      <CardTitle>Overview</CardTitle>
+                    </CardHeader>
+                    <CardContent className="pl-2">
+                      <Overview />
+                    </CardContent>
+                  </Card>
+                  <Card className="col-span-3">
+                    <CardHeader>
+                      <CardTitle>Inventory</CardTitle>
+                      <CardDescription>Stock Overview</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <Inventory />
+                    </CardContent>
+                  </Card>
+                </div>
+              </TabsContent>
+            </Tabs>
           </div>
-          <Tabs defaultValue="overview" className="space-y-4">
-            <TabsList>
-              <TabsTrigger value="overview">Overview</TabsTrigger>
-            </TabsList>
-            <TabsContent value="overview" className="space-y-4">
-              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-                <Card>
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">
-                      Total Revenue
-                    </CardTitle>
-                    <DollarSign className="h-4 w-4 text-muted-foreground" />
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-2xl font-bold">$45,231.89</div>
-                    <p className="text-xs text-muted-foreground">
-                      +20.1% from last month
-                    </p>
-                  </CardContent>
-                </Card>
-                <Card>
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">
-                      Subscriptions
-                    </CardTitle>
-                    <Users className="h-4 w-4 text-muted-foreground" />
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-2xl font-bold">+2350</div>
-                    <p className="text-xs text-muted-foreground">
-                      +180.1% from last month
-                    </p>
-                  </CardContent>
-                </Card>
-                <Card>
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">Sales</CardTitle>
-                    <CreditCard className="h-4 w-4 text-muted-foreground" />
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-2xl font-bold">+12,234</div>
-                    <p className="text-xs text-muted-foreground">
-                      +19% from last month
-                    </p>
-                  </CardContent>
-                </Card>
-                <Card>
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">
-                      Active Now
-                    </CardTitle>
-                    <Activity className="h-4 w-4 text-muted-foreground" />
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-2xl font-bold">+573</div>
-                    <p className="text-xs text-muted-foreground">
-                      +201 since last hour
-                    </p>
-                  </CardContent>
-                </Card>
-              </div>
-              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-                <Card className="col-span-4">
-                  <CardHeader>
-                    <CardTitle>Overview</CardTitle>
-                  </CardHeader>
-                  <CardContent className="pl-2">
-                    <Overview />
-                  </CardContent>
-                </Card>
-                <Card className="col-span-3">
-                  <CardHeader>
-                    <CardTitle>Inventory</CardTitle>
-                    <CardDescription>Stock Overview</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <Inventory />
-                  </CardContent>
-                </Card>
-              </div>
-            </TabsContent>
-          </Tabs>
-        </div>
+        )}
       </PublicLayout>
     </React.Fragment>
   );

@@ -6,8 +6,8 @@ import PublicLayout from "@/components/layouts/PublicLayout";
 import { Item } from "./api/items";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import clsx from "clsx";
-import Image from "next/image";
 import Spinner from "@/components/spinner";
+import { ArrowDownAZ, ArrowUpZA } from "lucide-react";
 
 interface TableItemsProps {
   items: Item[];
@@ -150,10 +150,6 @@ export default function Products() {
     queryKey: ["groups"],
     queryFn: fetchItems,
   });
-  const skeletalData = Array.from(
-    { length: data?.length ?? 0 },
-    (_, i) => i + 1
-  );
 
   return (
     <React.Fragment>
@@ -214,20 +210,16 @@ export default function Products() {
                   <option value="quantity">Quantity</option>
                   <option value="threshold">Threshold</option>
                 </select>
-                <Image
-                  src="/arrow-down.png"
-                  alt="Asc"
-                  className="ml-2 mr-2 hover:cursor-pointer dark:invert"
+                <ArrowDownAZ
+                  className="hover:cursor-pointer"
                   width={30}
                   height={30}
                   onClick={() => {
                     setAsc(true);
                   }}
                 />
-                <Image
-                  src="/arrow-up.png"
-                  alt="Desc"
-                  className="hover:cursor-pointer dark:invert"
+                <ArrowUpZA
+                  className="hover:cursor-pointer"
                   width={30}
                   height={30}
                   onClick={() => {

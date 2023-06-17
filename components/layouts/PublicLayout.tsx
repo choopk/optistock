@@ -2,7 +2,7 @@ import React from "react";
 import { MainNav } from "@/components/main-nav";
 import { ThemeProvider } from "../theme-provider";
 import Link from "next/link";
-import Image from "next/image";
+import { Bell } from "lucide-react";
 
 const PublicLayout = ({ children }: { children: React.ReactNode }) => {
   return (
@@ -20,13 +20,7 @@ const PublicLayout = ({ children }: { children: React.ReactNode }) => {
                       href="/notifications"
                       className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
                     >
-                      <Image
-                        src="/notification.png"
-                        width={36}
-                        height={36}
-                        alt="Notifications"
-                        className="dark:invert"
-                      />
+                      <Bell />
                     </Link>
                   </div>
                 </div>
