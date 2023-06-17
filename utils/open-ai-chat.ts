@@ -3,18 +3,9 @@ import {
   BaseChatMessage,
   HumanChatMessage,
   AIChatMessage,
-  LLMResult,
 } from "langchain/schema";
-import { Category } from "@prisma/client";
 import { PREFIX_PROMPT_INVENTORY, PREFIX_PROMPT } from "./constants";
-
-type Item = {
-  name: string;
-  sku: string;
-  category: Category;
-  quantity: number;
-  threshold?: number;
-};
+import { Item } from "src/pages/api/items";
 
 export type ChatGPTAgent = "user" | "system" | "assistant";
 
@@ -72,9 +63,11 @@ export class OpenAiChat {
     let prefixPrompt: string | undefined;
     if (inventoryStatus) {
       for (const item of inventoryStatus) {
-        inventory += `${item.sku}, ${item.name}, ${item.category.name}, ${
-          item.quantity
-        }, ${item.threshold ?? "Not Set"}\n`;
+        inventory += `${item.sku}, ${item.name}, [${
+          item.categories
+            ? `${item.categories.map((value) => value.name).join(",")}`
+            : "No Category"
+        }], ${item.quantity} item, ${item.threshold ?? "No Threshold"}\n`;
       }
 
       prefixPrompt = PREFIX_PROMPT_INVENTORY.replace(
