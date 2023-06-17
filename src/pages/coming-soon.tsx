@@ -34,7 +34,7 @@ const NotificationCard: FC<NotificationCardProps> = ({ notification }) => {
   );
 };
 
-export default function Notifications() {
+export default function ComingSoon() {
   return (
     <React.Fragment>
       <Head>

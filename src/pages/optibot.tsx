@@ -3,7 +3,7 @@ import React from "react";
 import { Chat } from "@/components/chat";
 import PublicLayout from "@/components/layouts/PublicLayout";
 
-export default function Home() {
+export default function Optibot() {
   return (
     <React.Fragment>
       <Head>
