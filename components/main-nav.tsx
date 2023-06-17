@@ -19,7 +19,7 @@ export function MainNav({
         Dashboard
       </Link>
       <Link
-        href="/coming-soon"
+        href="/products"
         className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
       >
         Products
