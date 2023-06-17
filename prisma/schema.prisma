@@ -43,17 +43,24 @@ model Category {
 }
 
 model Notification {
-  id         Int      @id @default(autoincrement())
+  id         Int              @id @default(autoincrement())
   userId     String
-  user       User     @relation(fields: [userId], references: [id])
+  user       User             @relation(fields: [userId], references: [id])
   title      String
   message    String
-  readStatus Boolean  @default(false)
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  type       NotificationType
+  readStatus Boolean          @default(false)
+  createdAt  DateTime         @default(now())
+  updatedAt  DateTime         @updatedAt
 }
 
 enum Role {
   USER
   ADMIN
+}
+
+enum NotificationType {
+  LOW_STOCK
+  SCHEDULED_ORDER
+  LATE_PAYMENT
 }
