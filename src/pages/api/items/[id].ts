@@ -1,18 +1,8 @@
-import { Category, PrismaClient } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
+import { Item } from "./index";
 
 const prisma = new PrismaClient();
-
-type Item = {
-  id?: number;
-  name?: string;
-  sku?: string;
-  description?: string | null;
-  category?: Category;
-  quantity?: number;
-  createdAt?: Date;
-  updatedAt?: Date;
-};
 
 export default async function handler(
   req: NextApiRequest,
@@ -49,7 +39,7 @@ export default async function handler(
       id: itemId,
     },
     include: {
-      category: true,
+      categories: true,
     },
   });
 

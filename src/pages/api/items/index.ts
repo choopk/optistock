@@ -3,12 +3,12 @@ import type { NextApiRequest, NextApiResponse } from "next";
 
 const prisma = new PrismaClient();
 
-type Item = {
+export type Item = {
   id: number;
   name: string;
   sku: string;
   description?: string | null;
-  category: Category;
+  categories?: Category[];
   quantity: number;
   createdAt: Date;
   updatedAt: Date;
@@ -24,14 +24,14 @@ export default async function handler(
     const item = await prisma.item.create({
       data: {
         ...reqItem,
-        category: {
+        categories: {
           connect: {
-            id: reqItem.category.id,
+            id: reqItem.categories[0].id,
           },
         },
       },
       include: {
-        category: true,
+        categories: true,
       },
     });
     res.status(201).json(item);
@@ -48,7 +48,7 @@ export default async function handler(
     take,
     orderBy: [sort],
     include: {
-      category: true,
+      categories: true,
     },
   });
 
