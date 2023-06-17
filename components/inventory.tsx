@@ -26,31 +26,30 @@ export function Inventory() {
 
     const fetchItems = useFetch(`http://localhost:3000/api/items`, { sort, skip, take })
     const { data, isLoading } = useQuery({ queryKey: ['groups'], queryFn: fetchItems })
-    const skeletalData = [1, 2, 3, 4, 5]
+    const skeletalData = Array.from({ length: data?.length ?? 0 }, (_, i) => i + 1);
     return (
         <div className="space-y-8">
             {isLoading ? (
                 skeletalData.map((item) =>
-                    <React.Fragment key={item}>
-                        <Skeleton className="h-1 w-9" />
-                        <div className="ml-4 space-y-1">
-                            <Skeleton className="text-sm text-muted-foreground block h-2 w-3/4" />
-                            <Skeleton className="text-sm text-muted-foreground block h-2 w-1/2" />
-                            <Skeleton className="text-sm text-muted-foreground block h-2 w-2/3" />
+                    <div key={item} className="flex items-center space-x-4">
+                        <Skeleton className="h-12 w-12 rounded-full" />
+                        <div className="space-y-2">
+                            <Skeleton className="h-4 w-[250px]" />
+                            <Skeleton className="h-4 w-[200px]" />
                         </div>
-                    </React.Fragment>
+                    </div>
                 )
             ) : (
                 data?.map((item: Item) => (
                     <div key={item.id} className="flex items-center">
                         <Avatar className="h-9 w-9">
                             <AvatarImage src="/avatars/01.png" alt="Avatar" />
-                            <AvatarFallback>{item.name[0]}{item.name.split(' ')[1][0]}</AvatarFallback>
+                            <AvatarFallback>{item.name?.[0]}{item.name?.split(' ')?.[1]?.[0]}</AvatarFallback>
                         </Avatar>
                         <div className="ml-4 space-y-1">
-                            <p className="text-sm text-muted-foreground">{item.description}</p>
+                            <p className="text-sm text-muted-foreground">{item.name}</p>
                             <p className="text-sm text-muted-foreground">{item.sku}</p>
-                            <p className="text-sm text-muted-foreground">{item.category.name}</p>
+                            <p className="text-sm text-muted-foreground">{item.category?.name}</p>
                         </div>
                         <div className="ml-auto font-medium">{item.quantity}</div>
                     </div>

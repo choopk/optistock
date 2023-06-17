@@ -129,8 +129,8 @@ export function Chat() {
   };
 
   return (
-    <div className="flex h-[500px] flex-col overflow-y-auto rounded-2xl border-zinc-100 lg:border lg:p-6">
-      <ScrollArea className="flex-grow">
+    <div className="flex h-[500px] flex-col overflow-y-auto rounded-2xl lg:border lg:p-6 bg-white shadow-md border border-coolGray-300 ml-7 mr-7">
+      <ScrollArea className="flex-grow p-4">
         {messages.map(({ content, role }, index) => (
           <ChatLine key={index} role={role} content={content} />
         ))}
@@ -142,11 +142,13 @@ export function Chat() {
         )}
         <div ref={endOfMessagesRef} />
       </ScrollArea>
-      <InputMessage
-        input={input}
-        setInput={setInput}
-        sendMessage={sendMessage}
-      />
+      <div className="bg-gray-100 p-4">
+        <InputMessage
+          input={input}
+          setInput={setInput}
+          sendMessage={sendMessage}
+        />
+      </div>
     </div>
   );
 }
