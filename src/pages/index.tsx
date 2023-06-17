@@ -13,8 +13,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Overview } from "@/components/overview";
 import { Inventory } from "@/components/inventory";
 import { useQuery } from "@tanstack/react-query";
 import { useFetch } from "@/hooks";
@@ -107,117 +105,102 @@ export default function Home() {
             <div className="flex items-center justify-between space-y-2">
               <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
             </div>
-            <Tabs defaultValue="overview" className="space-y-4">
-              <TabsList>
-                <TabsTrigger value="overview">Overview</TabsTrigger>
-              </TabsList>
-              <TabsContent value="overview" className="space-y-4">
-                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-                  <Card>
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">
-                        Total Stock
-                      </CardTitle>
-                      <PackageSearch className="h-4 w-4 text-muted-foreground" />
-                    </CardHeader>
-                    <CardContent>
-                      <div className="text-2xl font-bold">{totalStock}</div>
-                    </CardContent>
-                  </Card>
-                  <Card>
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">
-                        Most Stock Item
-                      </CardTitle>
-                      <TrendingUp className="h-4 w-4 text-muted-foreground" />
-                    </CardHeader>
-                    <CardContent>
-                      <div className="text-md group relative inline-block font-bold duration-300">
-                        {mostStock.name.length > 30
-                          ? `${mostStock.name.slice(0, 30)}...`
-                          : mostStock.name}
-                        <span className="absolute -top-2 -right-3 z-10 hidden w-48 translate-x-full rounded-lg bg-gray-700 px-2 py-1 text-center text-sm text-white before:absolute before:top-1/2 before:right-[100%] before:-translate-y-1/2 before:border-8 before:border-y-transparent before:border-l-transparent before:border-r-gray-700 before:content-[''] group-hover:flex">
-                          {mostStock.name}
-                        </span>
-                      </div>
-                      <p className="text-s text-muted-foreground">
-                        {mostStock.quantity}/{mostStock.threshold ?? "?"}
-                      </p>
-                    </CardContent>
-                  </Card>
-                  <Card>
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">
-                        Least Stock Item
-                      </CardTitle>
-                      <TrendingDown className="h-4 w-4 text-muted-foreground" />
-                    </CardHeader>
-                    <CardContent>
-                      <div className="text-md group relative inline-block font-bold duration-300">
-                        {leastStock.name.length > 30
-                          ? `${leastStock.name.slice(0, 30)}...`
-                          : leastStock.name}
-                        <span className="absolute -top-2 -right-3 z-10 hidden w-48 translate-x-full rounded-lg bg-gray-700 px-2 py-1 text-center text-sm text-white before:absolute before:top-1/2 before:right-[100%] before:-translate-y-1/2 before:border-8 before:border-y-transparent before:border-l-transparent before:border-r-gray-700 before:content-[''] group-hover:flex">
-                          {leastStock.name}
-                        </span>
-                      </div>
-                      <p
-                        className={clsx(
-                          "text-s text-muted-foreground",
-                          leastStock.quantity - (leastStock.threshold ?? 0) <= 0
-                            ? "font-bold text-red-600 dark:text-red-300"
-                            : ""
-                        )}
-                      >
-                        {leastStock.quantity}/{leastStock.threshold ?? "?"}
-                      </p>
-                    </CardContent>
-                  </Card>
-                  <Card>
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">
-                        Items Require Restock
-                      </CardTitle>
-                      <PackagePlus className="h-4 w-4 text-muted-foreground" />
-                    </CardHeader>
-                    <CardContent>
-                      <div
-                        className={clsx(
-                          "group relative inline-block text-2xl font-bold font-bold duration-300",
-                          restockCount > 0
-                            ? "font-bold text-red-600 dark:text-red-300"
-                            : ""
-                        )}
-                      >
-                        {restockCount}
-                        <span className="absolute -top-2 -right-3 z-10 hidden w-48 translate-x-full rounded-lg bg-gray-700 px-2 py-1 text-center text-sm text-white before:absolute before:top-1/2 before:right-[100%] before:-translate-y-1/2 before:border-8 before:border-y-transparent before:border-l-transparent before:border-r-gray-700 before:content-[''] group-hover:flex">
-                          {restockItem + (restockCount > 1 ? "..." : "")}
-                        </span>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </div>
-                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-                  <Card className="col-span-4">
-                    <CardHeader>
-                      <CardTitle>Overview</CardTitle>
-                    </CardHeader>
-                    <CardContent className="pl-2">
-                      <Overview />
-                    </CardContent>
-                  </Card>
-                  <Card className="col-span-3">
-                    <CardHeader>
-                      <CardTitle>Inventory</CardTitle>
-                      <CardDescription>Stock Overview</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <Inventory />
-                    </CardContent>
-                  </Card>
-                </div>
-              </TabsContent>
-            </Tabs>
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+              <Card>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">
+                    Total Stock
+                  </CardTitle>
+                  <PackageSearch className="h-4 w-4 text-muted-foreground" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">{totalStock}</div>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">
+                    Most Stock Item
+                  </CardTitle>
+                  <TrendingUp className="h-4 w-4 text-muted-foreground" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-md group relative inline-block font-bold duration-300">
+                    {mostStock.name.length > 30
+                      ? `${mostStock.name.slice(0, 30)}...`
+                      : mostStock.name}
+                    <span className="absolute -top-2 -right-3 z-10 hidden w-48 translate-x-full rounded-lg bg-gray-700 px-2 py-1 text-center text-sm text-white before:absolute before:top-1/2 before:right-[100%] before:-translate-y-1/2 before:border-8 before:border-y-transparent before:border-l-transparent before:border-r-gray-700 before:content-[''] group-hover:flex">
+                      {mostStock.name}
+                    </span>
+                  </div>
+                  <p className="text-s text-muted-foreground">
+                    {mostStock.quantity}/{mostStock.threshold ?? "?"}
+                  </p>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">
+                    Least Stock Item
+                  </CardTitle>
+                  <TrendingDown className="h-4 w-4 text-muted-foreground" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-md group relative inline-block font-bold duration-300">
+                    {leastStock.name.length > 30
+                      ? `${leastStock.name.slice(0, 30)}...`
+                      : leastStock.name}
+                    <span className="absolute -top-2 -right-3 z-10 hidden w-48 translate-x-full rounded-lg bg-gray-700 px-2 py-1 text-center text-sm text-white before:absolute before:top-1/2 before:right-[100%] before:-translate-y-1/2 before:border-8 before:border-y-transparent before:border-l-transparent before:border-r-gray-700 before:content-[''] group-hover:flex">
+                      {leastStock.name}
+                    </span>
+                  </div>
+                  <p
+                    className={clsx(
+                      "text-s text-muted-foreground",
+                      leastStock.quantity - (leastStock.threshold ?? 0) <= 0
+                        ? "font-bold text-red-600 dark:text-red-300"
+                        : ""
+                    )}
+                  >
+                    {leastStock.quantity}/{leastStock.threshold ?? "?"}
+                  </p>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">
+                    Items Require Restock
+                  </CardTitle>
+                  <PackagePlus className="h-4 w-4 text-muted-foreground" />
+                </CardHeader>
+                <CardContent>
+                  <div
+                    className={clsx(
+                      "group relative inline-block text-2xl font-bold font-bold duration-300",
+                      restockCount > 0
+                        ? "font-bold text-red-600 dark:text-red-300"
+                        : ""
+                    )}
+                  >
+                    {restockCount}
+                    <span className="absolute -top-2 -right-3 z-10 hidden w-48 translate-x-full rounded-lg bg-gray-700 px-2 py-1 text-center text-sm text-white before:absolute before:top-1/2 before:right-[100%] before:-translate-y-1/2 before:border-8 before:border-y-transparent before:border-l-transparent before:border-r-gray-700 before:content-[''] group-hover:flex">
+                      {restockItem + (restockCount > 1 ? "..." : "")}
+                    </span>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+            <div className="grid grid-cols-1 gap-4">
+              <Card className="col-span-1">
+                <CardHeader>
+                  <CardTitle>Lowest Stock Inventory</CardTitle>
+                  <CardDescription>Stock Overview</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <Inventory />
+                </CardContent>
+              </Card>
+            </div>
           </div>
         )}
       </PublicLayout>
