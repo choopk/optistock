@@ -46,36 +46,38 @@ export function ChatLine({ role = "assistant", content }: ChatGPTMessage) {
   if (!content) {
     return null;
   }
-  const formatteMessage = convertNewLines(content);
+  const formattedMessage = convertNewLines(content);
 
   return (
     <div
       className={
-        role != "assistant" ? "float-right clear-both" : "float-left clear-both"
+        role != "assistant"
+          ? "float-right clear-both ml-[10%]"
+          : "float-left clear-both mr-[10%]"
       }
     >
       <BalancerWrapper>
-        <div className="float-right mb-5 rounded-lg bg-white px-4 py-5 shadow-lg ring-1 ring-zinc-100 sm:px-6">
+        <div className="float-right mb-5 rounded-lg bg-white px-4 py-5 shadow-lg ring-1 ring-zinc-100 dark:bg-gray-800 dark:ring-gray-800 sm:px-6">
           <div className="flex space-x-3">
             <div className="flex-1 gap-4">
-              <p className="font-large text-xxl text-gray-900 flex items-center space-x-2">
-                <a href="#" className="hover:underline">
-                  {role == "assistant" ? "Optibot" : "You"}
-                </a>
+              <p className="font-large text-xxl mb-3 flex items-center space-x-2 text-gray-900">
                 {role == "assistant" && (
-                  <Avatar className="h-9 w-9">
+                  <Avatar className="mr-3 h-9 w-9">
                     <AvatarImage src="/avatars/optibot.png" alt="Avatar" />
                     <AvatarFallback>OP</AvatarFallback>
                   </Avatar>
                 )}
+                <span className="text-lg font-bold dark:text-white">
+                  {role == "assistant" ? "Optibot" : "You"}
+                </span>
               </p>
               <p
                 className={clsx(
-                  "text ",
-                  role == "assistant" ? "font- font-semibold " : "text-gray-400"
+                  "text font-semibold ",
+                  role == "assistant" ? "font-mono" : ""
                 )}
               >
-                {formatteMessage}
+                {formattedMessage}
               </p>
             </div>
           </div>
