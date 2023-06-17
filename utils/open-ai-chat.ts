@@ -74,7 +74,7 @@ export class OpenAiChat {
     let prefixPrompt: string | undefined;
     if (inventoryStatus) {
       for (const item of inventoryStatus) {
-        inventory += `${item.sku}, ${item.name}, ${item.category.name} ${item.quantity}\n`;
+        inventory += `${item.sku}, ${item.name}, ${item.category.name}, ${item.quantity}\n`;
       }
 
       if (process.env.PREFIX_PROMPT_INVENTORY) {
