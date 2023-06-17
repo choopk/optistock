@@ -1,7 +1,7 @@
 import Head from "next/head";
 import React from "react";
 import { Activity, CreditCard, DollarSign, Download, Users } from "lucide-react"
-
+import { useFetch } from "@/hooks";
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -14,7 +14,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { CalendarDateRangePicker } from "@/components/date-range-picker"
 import { MainNav } from "@/components/main-nav"
 import { Overview } from "@/components/overview"
-import { RecentSales } from "@/components/inventory"
+import { Inventory } from "@/components/inventory"
 import { Search } from "@/components/search"
 import TeamSwitcher from "@/components/team-switcher"
 import { UserNav } from "@/components/user-nav"
@@ -141,11 +141,11 @@ export default function Home() {
                       <CardHeader>
                         <CardTitle>Inventory</CardTitle>
                         <CardDescription>
-                        Stock Overview
+                          Stock Overview
                         </CardDescription>
                       </CardHeader>
                       <CardContent>
-                        <RecentSales />
+                        <Inventory />
                       </CardContent>
                     </Card>
                   </div>
@@ -158,3 +158,4 @@ export default function Home() {
     </React.Fragment>
   );
 }
+
