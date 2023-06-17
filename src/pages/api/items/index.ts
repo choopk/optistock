@@ -12,6 +12,7 @@ type Item = {
   quantity: number;
   createdAt: Date;
   updatedAt: Date;
+  threshold?: number | null;
 };
 
 export default async function handler(
