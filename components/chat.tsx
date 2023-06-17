@@ -1,8 +1,9 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { Button } from "./button";
 import { type ChatGPTMessage, ChatLine, LoadingChatLine } from "./chat-line";
 import { useCookies } from "react-cookie";
 import { ScrollArea } from "./ui/scroll-area";
+import { useWhisper } from '@chengsokdara/use-whisper'
 
 const COOKIE_NAME = "optibot";
 
@@ -51,6 +52,17 @@ export function Chat() {
   const [loading, setLoading] = useState(false);
   const [cookie, setCookie] = useCookies([COOKIE_NAME]);
   const endOfMessagesRef = useRef<null | HTMLDivElement>(null);
+  const {
+    recording,
+    speaking,
+    transcribing,
+    transcript,
+    pauseRecording,
+    startRecording,
+    stopRecording,
+  } = useWhisper({
+    apiKey: ''
+  })
 
   useEffect(() => {
     if (!cookie[COOKIE_NAME]) {
@@ -60,11 +72,12 @@ export function Chat() {
     }
   }, [cookie, setCookie]);
 
+
+
   useEffect(() => {
     endOfMessagesRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, loading]);
 
-  // send message to API /api/chat endpoint
   const sendMessage = async (message: string) => {
     setLoading(true);
     const newMessages = [
@@ -117,6 +130,19 @@ export function Chat() {
     }
   };
 
+  useEffect(() => {
+    const sendTranscriptText = async () => {
+      if (transcript.text) {
+        await sendMessage(transcript.text);
+        setInput("");
+      }
+    };
+    sendTranscriptText();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [transcript.text]);
+
+
+
   return (
     <div className="border-coolGray-300 ml-7 mr-7 flex h-[800px] max-h-[80vh] flex-col overflow-y-auto rounded-2xl border bg-gray-100 shadow-md dark:border-gray-700 dark:bg-gray-800 dark:bg-gray-900 dark:text-gray-300 lg:border lg:p-6">
       <ScrollArea className="flex-grow p-4">
@@ -133,11 +159,19 @@ export function Chat() {
       </ScrollArea>
       <div className="rounded-2xl p-4">
         <InputMessage
-          input={input}
+          input={input || transcript.text}
           setInput={setInput}
           sendMessage={sendMessage}
+          transcript
         />
       </div>
+      <p>Recording: {recording}</p>
+      <p>Speaking: {speaking}</p>
+      <p>Transcribing: {transcribing}</p>
+      <p>Transcribed Text: {transcript.text}</p>
+      <button onClick={() => { console.log("clicked"); startRecording(); }}>Start</button>
+      <button onClick={() => pauseRecording()}>Pause</button>
+      <button onClick={() => stopRecording()}>Stop</button>
     </div>
   );
 }
