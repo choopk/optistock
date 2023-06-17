@@ -6,6 +6,7 @@ import {
   LLMResult,
 } from "langchain/schema";
 import { Category } from "@prisma/client";
+import { PREFIX_PROMPT_INVENTORY, PREFIX_PROMPT } from "./constants";
 
 type Item = {
   name: string;
@@ -59,7 +60,7 @@ export class OpenAiChat {
           },
         },
         {
-          async handleLLMEnd(output: LLMResult) {
+          async handleLLMEnd() {
             await writer.ready;
             await writer.close();
           },
@@ -76,18 +77,12 @@ export class OpenAiChat {
         }, ${item.threshold ?? "Not Set"}\n`;
       }
 
-      if (process.env.PREFIX_PROMPT_INVENTORY) {
-        prefixPrompt = process.env.PREFIX_PROMPT_INVENTORY.replace(
-          "{INVENTORY_STATUS}",
-          inventory
-        );
-      }
-    } else if (process.env.PREFIX_PROMPT) {
-      prefixPrompt = process.env.PREFIX_PROMPT;
-    }
-
-    if (prefixPrompt === undefined) {
-      prefixPrompt = "You are a helpful assistant";
+      prefixPrompt = PREFIX_PROMPT_INVENTORY.replace(
+        "{INVENTORY_STATUS}",
+        inventory
+      );
+    } else {
+      prefixPrompt = PREFIX_PROMPT;
     }
 
     const messageBlocks: BaseChatMessage[] = [
