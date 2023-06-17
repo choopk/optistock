@@ -13,24 +13,26 @@ generator client {
 }
 
 model User {
-  id        String   @id @default(cuid())
-  name      String?
-  email     String?  @unique
-  role      Role     @default(USER)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id           String         @id @default(cuid())
+  name         String?
+  email        String?        @unique
+  role         Role           @default(USER)
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  Notification Notification[]
 }
 
 model Item {
-  id          Int      @id @default(autoincrement())
-  name        String
-  sku         String   @unique
-  description String?
-  quantity    Int
-  category    Category @relation(fields: [categoryId], references: [id])
-  categoryId  Int
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id           Int            @id @default(autoincrement())
+  name         String
+  sku          String         @unique
+  description  String?
+  quantity     Int
+  category     Category       @relation(fields: [categoryId], references: [id])
+  categoryId   Int
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  Notification Notification[]
 }
 
 model Category {
@@ -41,7 +43,27 @@ model Category {
   updatedAt DateTime @updatedAt
 }
 
+model Notification {
+  id         Int              @id @default(autoincrement())
+  userId     String
+  user       User             @relation(fields: [userId], references: [id])
+  itemId     Int?
+  item       Item?            @relation(fields: [itemId], references: [id])
+  title      String
+  message    String
+  type       NotificationType
+  readStatus Boolean          @default(false)
+  createdAt  DateTime         @default(now())
+  updatedAt  DateTime         @updatedAt
+}
+
 enum Role {
   USER
   ADMIN
+}
+
+enum NotificationType {
+  LOW_STOCK
+  SCHEDULED_ORDER
+  LATE_PAYMENT
 }
