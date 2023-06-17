@@ -1,7 +1,6 @@
 import Head from "next/head";
 import React from "react";
 import { Activity, CreditCard, DollarSign, Download, Users } from "lucide-react"
-import { useFetch } from "@/hooks";
 import { Button } from "@/components/ui/button"
 import {
   Card,
