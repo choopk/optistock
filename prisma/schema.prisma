@@ -29,17 +29,17 @@ model Item {
   description  String?
   quantity     Int
   threshold    Int?
-  category     Category       @relation(fields: [categoryId], references: [id])
-  categoryId   Int
+  image        String?
+  categories   Category[]     @relation("CategoryToItem")
   createdAt    DateTime       @default(now())
   updatedAt    DateTime       @updatedAt
   Notification Notification[]
 }
 
 model Category {
-  id        Int      @id @default(autoincrement())
+  id        String   @id @default(cuid())
   name      String
-  items     Item[]
+  items     Item[]   @relation("CategoryToItem")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
