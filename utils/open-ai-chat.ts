@@ -8,14 +8,11 @@ import {
 import { Category } from "@prisma/client";
 
 type Item = {
-  id: number;
   name: string;
   sku: string;
-  description?: string | null;
   category: Category;
   quantity: number;
-  createdAt: Date;
-  updatedAt: Date;
+  threshold?: number;
 };
 
 export type ChatGPTAgent = "user" | "system" | "assistant";
@@ -70,11 +67,13 @@ export class OpenAiChat {
       ],
     });
 
-    let inventory = "";
+    let inventory = "\n";
     let prefixPrompt: string | undefined;
     if (inventoryStatus) {
       for (const item of inventoryStatus) {
-        inventory += `${item.sku}, ${item.name}, ${item.category.name}, ${item.quantity}\n`;
+        inventory += `${item.sku}, ${item.name}, ${item.category.name}, ${
+          item.quantity
+        }, ${item.threshold ?? "Not Set"}\n`;
       }
 
       if (process.env.PREFIX_PROMPT_INVENTORY) {
