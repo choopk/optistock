@@ -1,28 +1,28 @@
 import Head from "next/head";
 import React from "react";
-import { Activity, CreditCard, DollarSign, Download, Users } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import {
+  Activity,
+  CreditCard,
+  DollarSign,
+  Download,
+  Users,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
-import {
-  Chat
-} from "@/components/chat"
-import Link from 'next/link'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { CalendarDateRangePicker } from "@/components/date-range-picker"
-import { Overview } from "@/components/overview"
-import { Inventory } from "@/components/inventory"
+} from "@/components/ui/card";
+import Link from "next/link";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { CalendarDateRangePicker } from "@/components/date-range-picker";
+import { Overview } from "@/components/overview";
+import { Inventory } from "@/components/inventory";
 import PublicLayout from "@/components/layouts/PublicLayout";
 
-
-
 export default function Home() {
-
   return (
     <React.Fragment>
       <Head>
@@ -127,9 +127,7 @@ export default function Home() {
                 <Card className="col-span-3">
                   <CardHeader>
                     <CardTitle>Inventory</CardTitle>
-                    <CardDescription>
-                      Stock Overview
-                    </CardDescription>
+                    <CardDescription>Stock Overview</CardDescription>
                   </CardHeader>
                   <CardContent>
                     <Inventory />
@@ -139,9 +137,7 @@ export default function Home() {
             </TabsContent>
           </Tabs>
         </div>
-        <Chat />
       </PublicLayout>
     </React.Fragment>
   );
 }
-

@@ -14,12 +14,13 @@ export const initialMessages: ChatGPTMessage[] = [
 ];
 
 const InputMessage = ({ input, setInput, sendMessage }: any) => (
-  <div className="clear-both mt-6 flex">
+  <div className="clear-both flex">
     <input
       type="text"
       aria-label="chat input"
       required
-      className="min-w-0 flex-auto appearance-none rounded-md border border-zinc-900/10 bg-white px-3 py-[calc(theme(spacing.2)-1px)] shadow-md shadow-zinc-800/5 placeholder:text-zinc-400 focus:border-teal-500 focus:outline-none focus:ring-4 focus:ring-teal-500/10 sm:text-sm"
+      className="min-w-0 flex-auto appearance-none rounded-l-md border border-zinc-900/10 bg-white px-3 py-[calc(theme(spacing.2)-1px)] shadow-md shadow-zinc-800/5 placeholder:text-zinc-400 focus:border-teal-500 focus:outline-none focus:ring-4 focus:ring-teal-500/10 dark:bg-gray-300 dark:text-black dark:placeholder:text-zinc-500 sm:text-sm"
+      placeholder="Ask anything"
       value={input}
       onKeyDown={(e) => {
         if (e.key === "Enter") {
@@ -33,7 +34,7 @@ const InputMessage = ({ input, setInput, sendMessage }: any) => (
     />
     <Button
       type="submit"
-      className="ml-4 flex-none"
+      className="flex-none rounded-l-none"
       onClick={() => {
         sendMessage(input);
         setInput("");
@@ -60,11 +61,7 @@ export function Chat() {
   }, [cookie, setCookie]);
 
   useEffect(() => {
-    if (endOfMessagesRef.current) {
-      if (loading) {
-        endOfMessagesRef.current.scrollIntoView({ behavior: "smooth" });
-      }
-    }
+    endOfMessagesRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, loading]);
 
   // send message to API /api/chat endpoint
@@ -121,8 +118,8 @@ export function Chat() {
   };
 
   return (
-    <div className="flex h-[500px] flex-col overflow-y-auto rounded-2xl lg:border lg:p-6 bg-white shadow-md border border-coolGray-300 ml-7 mr-7 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700">
-      <ScrollArea className="flex-grow p-4 dark:bg-gray-900">
+    <div className="border-coolGray-300 ml-7 mr-7 flex h-[800px] max-h-[80vh] flex-col overflow-y-auto rounded-2xl border bg-gray-100 shadow-md dark:border-gray-700 dark:bg-gray-800 dark:bg-gray-900 dark:text-gray-300 lg:border lg:p-6">
+      <ScrollArea className="flex-grow p-4">
         {messages.map(({ content, role }, index) => (
           <ChatLine key={index} role={role} content={content} />
         ))}
@@ -132,9 +129,9 @@ export function Chat() {
             Type a message to start the conversation
           </span>
         )}
-        <div ref={endOfMessagesRef} />
+        <div className="clear-both" ref={endOfMessagesRef} />
       </ScrollArea>
-      <div className="bg-gray-100 p-4 dark:bg-gray-800">
+      <div className="rounded-2xl p-4">
         <InputMessage
           input={input}
           setInput={setInput}
