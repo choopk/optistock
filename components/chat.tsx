@@ -9,8 +9,7 @@ const COOKIE_NAME = "optibot";
 export const initialMessages: ChatGPTMessage[] = [
   {
     role: "assistant",
-    content:
-      'Hi! I am a friendly AI assistant. Ask me anything!\nInclude "My Stock" in your question to get answer about your stock!',
+    content: "Hi! I am a friendly AI assistant. Ask me anything!",
   },
 ];
 
