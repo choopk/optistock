@@ -1,6 +1,7 @@
 import Link from "next/link"
 
 import { cn } from "@/lib/utils"
+import { ThemeToggle } from "@/components/theme-toggle"
 
 export function MainNav({
     className,
@@ -35,6 +36,7 @@ export function MainNav({
             >
                 Settings
             </Link>
+            <ThemeToggle />
         </nav>
     )
 }

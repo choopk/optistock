@@ -67,14 +67,6 @@ export function Chat() {
     }
   }, [messages, loading]);
 
-  useEffect(() => {
-    if (endOfMessagesRef.current) {
-      if (loading) {
-        endOfMessagesRef.current.scrollIntoView({ behavior: "smooth" });
-      }
-    }
-  }, [messages, loading]);
-
   // send message to API /api/chat endpoint
   const sendMessage = async (message: string) => {
     setLoading(true);
@@ -129,20 +121,20 @@ export function Chat() {
   };
 
   return (
-    <div className="flex h-[500px] flex-col overflow-y-auto rounded-2xl lg:border lg:p-6 bg-white shadow-md border border-coolGray-300 ml-7 mr-7">
-      <ScrollArea className="flex-grow p-4">
+    <div className="flex h-[500px] flex-col overflow-y-auto rounded-2xl lg:border lg:p-6 bg-white shadow-md border border-coolGray-300 ml-7 mr-7 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700">
+      <ScrollArea className="flex-grow p-4 dark:bg-gray-900">
         {messages.map(({ content, role }, index) => (
           <ChatLine key={index} role={role} content={content} />
         ))}
         {loading && <LoadingChatLine />}
         {messages.length < 2 && (
-          <span className="clear-both mx-auto flex flex-grow text-gray-600">
+          <span className="clear-both mx-auto flex flex-grow text-gray-600 dark:text-gray-400">
             Type a message to start the conversation
           </span>
         )}
         <div ref={endOfMessagesRef} />
       </ScrollArea>
-      <div className="bg-gray-100 p-4">
+      <div className="bg-gray-100 p-4 dark:bg-gray-800">
         <InputMessage
           input={input}
           setInput={setInput}
