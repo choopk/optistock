@@ -48,7 +48,7 @@ const Table: FC<TableItemsProps> = ({
   switch (sort) {
     case "sku":
       items = items.sort((a, b) =>
-        a.sku.localeCompare(b.sku, undefined, { sensitivity: "base" })
+        a.sku?.localeCompare(b.sku, undefined, { sensitivity: "base" })
       );
       break;
 
