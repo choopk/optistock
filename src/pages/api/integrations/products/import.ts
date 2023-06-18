@@ -3,7 +3,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import axios from "axios";
 import { Item } from "../../items";
 
-const POS_URL: string = "https://optipos.vercel.app/api/products";
+export const POS_URL: string = "https://optipos.vercel.app/api";
 
 const prisma = new PrismaClient();
 
@@ -60,7 +60,7 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<any>
 ) {
-  const { data } = await axios.get(POS_URL);
+  const { data } = await axios.get(`${POS_URL}/products`);
 
   const result = await transformAndSaveProductsToItems(data);
 

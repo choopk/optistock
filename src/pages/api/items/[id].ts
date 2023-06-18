@@ -1,6 +1,8 @@
 import { PrismaClient } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { Item } from "./index";
+import axios from "axios";
+import { POS_URL } from "../integrations/products/import";
 
 const prisma = new PrismaClient();
 
@@ -22,6 +24,7 @@ export default async function handler(
       },
       data: reqItem,
     });
+    await axios.post(`${POS_URL}/inventory/update/product`, item);
     res.status(200).json(item);
   }
 
